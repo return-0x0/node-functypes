@@ -141,7 +141,7 @@ const error = {
 };
 
 console.log(ResultError.fromObject(error).freeze().toString());
-// prints:
+// logs:
 // ! Error message.
 // + "key1": "value1"
 // + "key2": {
