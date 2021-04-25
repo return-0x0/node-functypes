@@ -22,10 +22,10 @@ const users = {
     }
 }
 
-function getUser(id: any): IOption<object> {
+function getUser(id) {
     return Option.get(users, id);
 }
-function getUserTheme(user: any): IOption<string | null> {
+function getUserTheme(user) {
     return Option.get(user, 'theme');
 }
 
