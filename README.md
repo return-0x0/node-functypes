@@ -69,7 +69,7 @@ let y = parseInteger('123').getOrThrow(); // returns `123`
 
 parseInteger('123abc')
     .onok(value => console.log(value))
-    .onerror(() => console.log('error'))
+    .onerror(error => console.log(error))
     .onboth(() => console.log('parsing ended'));
 // logs:
 // error
