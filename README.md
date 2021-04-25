@@ -151,6 +151,6 @@ console.log(ResultError.fromObject(error).freeze().toString());
 //   ! ...
 //   + "number": 13
 //   + "boolean": "string"
-//   + "null": null,
+//   + "null": null
 //   + "undefined": undefined
 ```
