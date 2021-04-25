@@ -1,0 +1,28 @@
+{
+  "name": "functypes",
+  "main": "lib/index.js",
+  "types": "types/index.d.ts",
+  "version": "1.0.0",
+  "description": "Provides basic functional types: result, option and tagged unions.",
+  "keywords": [
+    "functional"
+  ],
+  "author": "retueze",
+  "license": "ISC",
+  "files": [
+    "package.json",
+    "README.md",
+    "lib/**/*.js",
+    "types/**/*.d.ts"
+  ],
+  "scripts": {
+    "buildTsDev": "tsc -p tsconfig.dev.json",
+    "buildDev": "npm run buildTsDev",
+    "buildTsProd": "tsc -p tsconfig.prod.json",
+    "buildProd": "npm run buildTsProd",
+    "prepare": "del /q lib && del /q types && npm run buildProd"
+  },
+  "devDependencies": {
+    "typescript": "4.2"
+  }
+}
