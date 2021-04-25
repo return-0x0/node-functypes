@@ -40,7 +40,7 @@ some(1)
     .onnone(() => console.log('Not found.'))
     .onboth(() => console.log('Theme searching was ended.'));
 // logs:
-// 'light'
+// light
 // Theme searching was ended.
 
 // OR
@@ -111,8 +111,8 @@ console.log(error.toString());
 // ! some error
 // + "key1": "value1"
 // + "key2": {
-//      "key": "value2"
-//    }
+//   "key": "value2"
+// }
 // + "\"": "special\tvalue"
 //   ! inner #1
 //   ! inner #2
