@@ -3,7 +3,7 @@
   "main": "lib/index.js",
   "types": "types/index.d.ts",
   "version": "1.0.0",
-  "description": "Provides basic functional types: result, option and tagged unions.",
+  "description": "Provides basic functional types: results & options.",
   "keywords": [
     "functional"
   ],
