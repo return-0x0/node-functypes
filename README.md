@@ -59,7 +59,7 @@ Option.unwrap(some(1)
 const NUMBER_PATTERN = /^-?\d+$/;
 
 function parseInteger(input) {
-    if (!input.test(NUMBER_PATTERN)) return Result.error('The input is not a number.');
+    if (!NUMBER_PATTERN.test(input)) return Result.error('The input is not a number.');
 
     return Result.ok(parseInt(input));
 }
