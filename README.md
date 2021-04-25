@@ -145,8 +145,8 @@ console.log(ResultError.fromObject(error).freeze().toString());
 // ! Error message.
 // + "key1": "value1"
 // + "key2": {
-//      "key": "value2"
-//    }
+//    "key": "value2"
+// }
 //   ! Error message can be putted as a string.
 //   ! ...
 //   + "number": 13
