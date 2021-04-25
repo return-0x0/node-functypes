@@ -72,7 +72,7 @@ parseInteger('123abc')
     .onerror(error => console.log(error))
     .onboth(() => console.log('parsing ended'));
 // logs:
-// error
+// The input is not a number.
 // parsing ended
 
 const data = {
