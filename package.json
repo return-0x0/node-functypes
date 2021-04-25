@@ -5,10 +5,13 @@
   "version": "1.0.0",
   "description": "Provides basic functional types: results & options.",
   "keywords": [
-    "functional"
+    "functional",
+    "result",
+    "option"
   ],
   "author": "retueze",
   "license": "ISC",
+  "repository": "github:return-0x0/node-functypes",
   "files": [
     "package.json",
     "README.md",
