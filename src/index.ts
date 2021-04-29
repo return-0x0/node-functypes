@@ -1,102 +1,257 @@
+/**
+ * The option inteface.
+ */
 export interface IOption<T> {
+    /**
+     * If has value returns containing value; otherwise throws an error.
+     */
     readonly value: T;
+    /**
+     * If has value returns `true`; otherwise `false`.
+     */
     readonly hasValue: boolean;
     
+    /**
+     * If has value calls `callback`; otherwise do nothing.
+     * @param callback calling callback
+     * @returns {this}
+     */
     onsome(callback?: ((value: T) => void) | null): this;
+    /**
+     * If has value do nothing; otherwise calls `callback`.
+     * @param callback calling callback
+     * @returns {this}
+     */
     onnone(callback?: (() => void) | null): this;
+    /**
+     * Calls `callback` always.
+     * @param callback calling callback
+     * @returns {this}
+     */
     onboth(callback?: (() => void) | null): this;
+    /**
+     * If has value returns a new mapped option; otherwise returns none.
+     * @param mapper calling mapper
+     */
     map<TMapped>(mapper: (value: T) => TMapped): IOption<TMapped>;
+    /**
+     * If has value returns a result of `mapper` calling; otherwise returns none.
+     * @param mapper calling mapper
+     */
     do<TMapped>(mapper: (value: T) => IOption<TMapped>): IOption<TMapped>;
+    /**
+     * If has value returns value; otherwise returns `null`.
+     */
     toNullable(): T | null;
+    /**
+     * If has value returns a new succeeded {@link IResult} with containing value; otherwise returns a new failed {@link IResult} with `error`.
+     */
     toResult<TError>(error: TError): IResult<T, TError>;
 }
+/**
+ * The containing value implementation of {@link IOption}
+ */
 export class Some<T> implements IOption<T> {
+    /**
+     * Returns containing value.
+     */
     readonly value: T;
+    /**
+     * Returns `true` always.
+     */
     get hasValue(): boolean {
         return true;
     }
 
+    /**
+     * Creates a new {@link Some} object.
+     * @param value containing value
+     */
     constructor(value: T) {
         this.value = value;
     }
 
+    /**
+     * Calls `callback` always.
+     * @param callback calling callback
+     * @returns {this}
+     */
     onsome(callback?: (value: T) => void): this {
         if (callback) callback(this.value);
 
         return this;
     }
+    /**
+     * Do nothing always.
+     * @returns {this}
+     */
     onnone(): this {
         return this;
     }
+    /**
+     * Calls `callback` always.
+     * @param callback calling callback
+     * @returns {this}
+     */
     onboth(callback?: () => void): this {
         if (callback) callback();
 
         return this;
     }
+    /**
+     * Returns a new mapped option always.
+     * @param mapper calling mapper
+     */
     map<TMapped>(mapper: (value: T) => TMapped): IOption<TMapped> {
         return some(mapper(this.value));
     }
+    /**
+     * Returns a result of `mapper` calling always.
+     * @param mapper calling mapper
+     */
     do<TMapped>(mapper: (value: T) => IOption<TMapped>): IOption<TMapped> {
         return mapper(this.value);
     }
+    /**
+     * Returns containing value always.
+     */
     toNullable(): T | null {
         return this.value;
     }
+    /**
+     * Returns a new succeeded {@link IResult} with containing value always.
+     * @param _ unused
+     */
     toResult<TError>(_: TError): IResult<T, TError> {
         return Result.ok(this.value);
     }
 }
+/**
+ * Wraps {@link Some.constructor}.
+ * @param value containing value
+ * @returns {Some<T>}
+ */
 export function some<T>(value: T): Some<T> {
     return new Some(value);
 }
+/**
+ * The no value implementation of {@link IOption}
+ */
 export class None<T> implements IOption<T> {
+    /**
+     * Throws an error always.
+     */
     get value(): never {
         throw new Error('None value cannot be getted.');
     }
+    /**
+     * Returns `false` always.
+     */
     get hasValue(): boolean {
         return false;
     }
 
+    /**
+     * Creates a new {@link None} object.
+     */
     constructor() {}
 
+    /**
+     * Do nothing always.
+     * @returns {this}
+     */
     onsome(): this {
         return this;
     }
+    /**
+     * Calls `callback` always.
+     * @param callback calling callback
+     * @returns {this}
+     */
     onnone(callback?: () => void): this {
         if (callback) callback();
 
         return this;
     }
+    /**
+     * Calls `callback` always.
+     * @param callback calling callback
+     * @returns {this}
+     */
     onboth(callback?: () => void): this {
         if (callback) callback();
 
         return this;
     }
+    /**
+     * Returns none always.
+     * @param _ unused
+     */
     map<TMapped>(_: (value: T) => TMapped): IOption<TMapped> {
         return none();
     }
+    /**
+     * Returns none always.
+     * @param _ unused
+     */
     do<TMapped>(_: (value: T) => IOption<TMapped>): IOption<TMapped> {
         return none();
     }
+    /**
+     * Returns `null` always.
+     */
     toNullable(): T | null {
         return null;
     }
+    /**
+     * Returns a new failed {@link IResult} with `error` always.
+     */
     toResult<TError>(error: TError): IResult<T, TError> {
         return Result.error(error);
     }
 }
+/**
+ * Wraps {@link None.constructor}.
+ * @returns {None<T>}
+ */
 export function none<T>(): None<T> {
     return new None<T>();
 }
 
+/**
+ * The recursed option type.
+ */
 export type RecursedOption<T> = T | IOption<RecursedOption<T>>;
+/**
+ * Contains options utilities.
+ */
 export namespace Option {
+    /**
+     * If `nullable` is null returns none; otherwise a new option with `nullable` as value.
+     */
     export function wrap<T>(nullable?: T | null): IOption<T> {
         return nullable ? some(nullable) : none();
     }
-    export function get<T>(object: any, propertyKey: any): IOption<T> {
-        return propertyKey in object ? some(object[propertyKey]) : none();
+    /**
+     * Walks to object tree of `object` and if found required property returns a new option with found property as value; otherwise returns none.
+     * @param propertyKeys an array of property keys; string array item shall be detected as dot-separated string containing property keys.
+     */
+    export function get<T = any>(object: any, ...propertyKeys: any[]): IOption<T> {
+        propertyKeys = propertyKeys
+            .map(key => typeof key === 'string' ? key.split('.') : [key])
+            .reduce((sum, wrapped) => { sum.push(...wrapped); return sum; });
+
+        for (const propertyKey of propertyKeys) {
+            if (typeof object !== 'object' || !(propertyKey in object)) return none();
+
+            object = object[propertyKey];
+        }
+
+        return some<T>(object as T);
     }
+    /**
+     * If `outer` contains one or more nones returns none; otherwise returns the last value of `outer`
+     */
     export function unwrap<T>(outer: RecursedOption<T>): IOption<T> {
         return typeof outer === 'object' && 'hasValue' in outer && 'value' in outer
             ? outer.hasValue

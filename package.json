@@ -2,7 +2,7 @@
   "name": "functypes",
   "main": "lib/index.js",
   "types": "types/index.d.ts",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Provides basic functional types: results & options.",
   "keywords": [
     "functional",
