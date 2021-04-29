@@ -13,12 +13,6 @@
   "author": "retueze",
   "license": "ISC",
   "repository": "github:return-0x0/node-functypes",
-  "files": [
-    "package.json",
-    "README.md",
-    "lib/**/*.js",
-    "types/**/*.d.ts"
-  ],
   "scripts": {
     "buildTsDev": "tsc -p tsconfig.dev.json",
     "buildDev": "npm run buildTsDev",
