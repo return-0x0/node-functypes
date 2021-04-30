@@ -1,3 +1,14 @@
+### v1.1.1
+
+- Fixed result types of `Some<T>`/`None<T>` properties/methods:
+  - `Some<T>.hasValue: boolean` -> `true`
+  - `Some<T>.map<TMapped>(...): IOption<TMapped>` -> `Some<TMapped>`
+  - `Some<T>.toNullable(): T | null` -> `T`
+  - `Some<T>.hasValue: boolean` -> `false`
+  - `Some<T>.map<TMapped>(...): IOption<TMapped>` -> `None<TMapped>`
+  - `Some<T>.do<TMapped>(...): IOption<TMapped>` -> `None<TMapped>`
+  - `Some<T>.toNullable(): T | null` -> `null`
+
 ### v1.1.0
 
 - Upgraded `Option.get` function:
@@ -8,23 +19,4 @@
 
 ### v1.0.0
 
-- Namespaces:
-  - `Option`:
-    - `wrap<T>(nullable?: T | null): IOption<T>`
-    - `get<T>(object: any, propertyKey?: any): IOption<T>`
-    - `unwrap<T>(outer: RecursedOption<T>): IOption<T>`
-- Interfaces:
-  - `IOption<T>`
-  - `IResult<T, TError>`
-  - `IError`
-- Classes:
-  - `Some<T>`
-  - `None<T>`
-  - `Result<T, TError>`
-  - `ResultError`
-- Types:
-  - `RecursedOption<T>`
-  - `ObjectError`
-- Functions:
-  - `some<T>(value: T): Some<T>`
-  - `none<T>(): None<T>`
+Initial release.

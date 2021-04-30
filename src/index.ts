@@ -59,7 +59,7 @@ export class Some<T> implements IOption<T> {
     /**
      * Returns `true` always.
      */
-    get hasValue(): boolean {
+    get hasValue(): true {
         return true;
     }
 
@@ -102,7 +102,7 @@ export class Some<T> implements IOption<T> {
      * Returns a new mapped option always.
      * @param mapper calling mapper
      */
-    map<TMapped>(mapper: (value: T) => TMapped): IOption<TMapped> {
+    map<TMapped>(mapper: (value: T) => TMapped): Some<TMapped> {
         return some(mapper(this.value));
     }
     /**
@@ -115,7 +115,7 @@ export class Some<T> implements IOption<T> {
     /**
      * Returns containing value always.
      */
-    toNullable(): T | null {
+    toNullable(): T {
         return this.value;
     }
     /**
@@ -147,7 +147,7 @@ export class None<T> implements IOption<T> {
     /**
      * Returns `false` always.
      */
-    get hasValue(): boolean {
+    get hasValue(): false {
         return false;
     }
 
@@ -187,20 +187,20 @@ export class None<T> implements IOption<T> {
      * Returns none always.
      * @param _ unused
      */
-    map<TMapped>(_: (value: T) => TMapped): IOption<TMapped> {
+    map<TMapped>(_: (value: T) => TMapped): None<TMapped> {
         return none();
     }
     /**
      * Returns none always.
      * @param _ unused
      */
-    do<TMapped>(_: (value: T) => IOption<TMapped>): IOption<TMapped> {
+    do<TMapped>(_: (value: T) => IOption<TMapped>): None<TMapped> {
         return none();
     }
     /**
      * Returns `null` always.
      */
-    toNullable(): T | null {
+    toNullable(): null {
         return null;
     }
     /**
