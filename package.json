@@ -3,7 +3,7 @@
   "name": "functypes",
   "main": "lib/index.js",
   "types": "types/index.d.ts",
-  "version": "1.1.1",
+  "version": "2.0.0",
   "description": "Provides basic functional types: results & options.",
   "keywords": [
     "functional",
@@ -12,7 +12,10 @@
   ],
   "author": "retueze",
   "license": "ISC",
-  "repository": "github:return-0x0/node-functypes",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/return-0x0/node-functypes"
+  },
   "scripts": {
     "buildTsDev": "tsc -p tsconfig.dev.json",
     "buildDev": "npm run buildTsDev",
@@ -21,6 +24,7 @@
     "prepare": "del /q lib && del /q types && npm run buildProd"
   },
   "devDependencies": {
-    "typescript": "4.2"
+    "typescript": "4.2",
+    "@types/node": "^15.0.1"
   }
 }

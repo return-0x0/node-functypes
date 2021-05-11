@@ -12,31 +12,23 @@ export interface IOption<T> {
     readonly hasValue: boolean;
     
     /**
-     * If has value calls `callback`; otherwise do nothing.
-     * @param callback calling callback
-     * @returns {this}
+     * If has value and type of `callback` is not `undefined` and `callback` is not `null` calls `callback` always; otherwise do nothing.
      */
     onsome(callback?: ((value: T) => void) | null): this;
     /**
-     * If has value do nothing; otherwise calls `callback`.
-     * @param callback calling callback
-     * @returns {this}
+     * If does not have value and type of `callback` is not `undefined` and `callback` is not `null` calls `callback` always; otherwise do nothing.
      */
     onnone(callback?: (() => void) | null): this;
     /**
-     * Calls `callback` always.
-     * @param callback calling callback
-     * @returns {this}
+     * If type of `callback` is not `undefined` and `callback` is not `null` calls `callback` always; otherwise do nothing.
      */
     onboth(callback?: (() => void) | null): this;
     /**
      * If has value returns a new mapped option; otherwise returns none.
-     * @param mapper calling mapper
      */
     map<TMapped>(mapper: (value: T) => TMapped): IOption<TMapped>;
     /**
      * If has value returns a result of `mapper` calling; otherwise returns none.
-     * @param mapper calling mapper
      */
     do<TMapped>(mapper: (value: T) => IOption<TMapped>): IOption<TMapped>;
     /**
@@ -44,7 +36,7 @@ export interface IOption<T> {
      */
     toNullable(): T | null;
     /**
-     * If has value returns a new succeeded {@link IResult} with containing value; otherwise returns a new failed {@link IResult} with `error`.
+     * If has value returns a new succeeded result with containing value; otherwise returns a new failed result with `error`.
      */
     toResult<TError>(error: TError): IResult<T, TError>;
 }
@@ -65,16 +57,13 @@ export class Some<T> implements IOption<T> {
 
     /**
      * Creates a new {@link Some} object.
-     * @param value containing value
      */
     constructor(value: T) {
         this.value = value;
     }
 
     /**
-     * Calls `callback` always.
-     * @param callback calling callback
-     * @returns {this}
+     * If type of `callback` is not `undefined` and `callback` is not `null` calls `callback` always; otherwise do nothing.
      */
     onsome(callback?: (value: T) => void): this {
         if (callback) callback(this.value);
@@ -83,15 +72,12 @@ export class Some<T> implements IOption<T> {
     }
     /**
      * Do nothing always.
-     * @returns {this}
      */
     onnone(): this {
         return this;
     }
     /**
-     * Calls `callback` always.
-     * @param callback calling callback
-     * @returns {this}
+     * If type of `callback` is not `undefined` and `callback` is not `null` calls `callback` always; otherwise do nothing.
      */
     onboth(callback?: () => void): this {
         if (callback) callback();
@@ -100,14 +86,12 @@ export class Some<T> implements IOption<T> {
     }
     /**
      * Returns a new mapped option always.
-     * @param mapper calling mapper
      */
     map<TMapped>(mapper: (value: T) => TMapped): Some<TMapped> {
         return some(mapper(this.value));
     }
     /**
      * Returns a result of `mapper` calling always.
-     * @param mapper calling mapper
      */
     do<TMapped>(mapper: (value: T) => IOption<TMapped>): IOption<TMapped> {
         return mapper(this.value);
@@ -119,8 +103,7 @@ export class Some<T> implements IOption<T> {
         return this.value;
     }
     /**
-     * Returns a new succeeded {@link IResult} with containing value always.
-     * @param _ unused
+     * Returns a new succeeded result with containing value always.
      */
     toResult<TError>(_: TError): IResult<T, TError> {
         return Result.ok(this.value);
@@ -128,14 +111,12 @@ export class Some<T> implements IOption<T> {
 }
 /**
  * Wraps {@link Some.constructor}.
- * @param value containing value
- * @returns {Some<T>}
  */
 export function some<T>(value: T): Some<T> {
     return new Some(value);
 }
 /**
- * The no value implementation of {@link IOption}
+ * The none implementation of {@link IOption}
  */
 export class None<T> implements IOption<T> {
     /**
@@ -152,21 +133,18 @@ export class None<T> implements IOption<T> {
     }
 
     /**
-     * Creates a new {@link None} object.
+     * Creates a new none.
      */
     constructor() {}
 
     /**
      * Do nothing always.
-     * @returns {this}
      */
     onsome(): this {
         return this;
     }
     /**
-     * Calls `callback` always.
-     * @param callback calling callback
-     * @returns {this}
+     * If type of `callback` is not `undefined` and `callback` is not `null` calls `callback` always; otherwise do nothing.
      */
     onnone(callback?: () => void): this {
         if (callback) callback();
@@ -174,9 +152,7 @@ export class None<T> implements IOption<T> {
         return this;
     }
     /**
-     * Calls `callback` always.
-     * @param callback calling callback
-     * @returns {this}
+     * If type of `callback` is not `undefined` and `callback` is not `null` calls `callback` always; otherwise do nothing.
      */
     onboth(callback?: () => void): this {
         if (callback) callback();
@@ -185,14 +161,12 @@ export class None<T> implements IOption<T> {
     }
     /**
      * Returns none always.
-     * @param _ unused
      */
     map<TMapped>(_: (value: T) => TMapped): None<TMapped> {
         return none();
     }
     /**
      * Returns none always.
-     * @param _ unused
      */
     do<TMapped>(_: (value: T) => IOption<TMapped>): None<TMapped> {
         return none();
@@ -204,7 +178,7 @@ export class None<T> implements IOption<T> {
         return null;
     }
     /**
-     * Returns a new failed {@link IResult} with `error` always.
+     * Returns a new failed result with `error` always.
      */
     toResult<TError>(error: TError): IResult<T, TError> {
         return Result.error(error);
@@ -212,7 +186,6 @@ export class None<T> implements IOption<T> {
 }
 /**
  * Wraps {@link None.constructor}.
- * @returns {None<T>}
  */
 export function none<T>(): None<T> {
     return new None<T>();
@@ -234,7 +207,6 @@ export namespace Option {
     }
     /**
      * Walks to object tree of `object` and if found required property returns a new option with found property as value; otherwise returns none.
-     * @param propertyKeys an array of property keys; string array item shall be detected as dot-separated string containing property keys.
      */
     export function get<T = any>(object: any, ...propertyKeys: any[]): IOption<T> {
         propertyKeys = propertyKeys
@@ -250,7 +222,7 @@ export namespace Option {
         return some<T>(object as T);
     }
     /**
-     * If `outer` contains one or more nones returns none; otherwise returns the last value of `outer`
+     * If `outer` contains one or more nones returns none; otherwise returns the last value of `outer`.
      */
     export function unwrap<T>(outer: RecursedOption<T>): IOption<T> {
         return typeof outer === 'object' && 'hasValue' in outer && 'value' in outer
@@ -261,32 +233,80 @@ export namespace Option {
     }
 }
 
+/**
+ * The result interface.
+ */
 export interface IResult<T = void, TError = any> {
+    /**
+     * If suceeded returns containing value; otherwise throws an error.
+     */
     readonly value: T;
+    /**
+     * If suceeded throws an error; otherwise returns containing error.
+     */
     readonly error: TError;
+    /**
+     * If contain value returns `true`; otherwise `false`.
+     */
     readonly ok: boolean;
 
+    /**
+     * If suceeded and type of `callback` is not `undefined` and `callback` is not `null` calls `callback`; otherwise do nothing.
+     */
     onok(callback?: ((value: T) => void) | null): this;
+    /**
+     * If not suceeded and type of `callback` is not `undefined` and `callback` is not `null` calls `callback`; otherwise do nothing.
+     */
     onerror(callback?: ((error: TError) => void) | null): this;
+    /**
+     * If type of `callback` is not `undefined` and `callback` is not `null` calls `callback` always; otherwise do nothing.
+     */
     onboth(callback?: (() => void) | null): this;
+    /**
+     * Returns mapped result.
+     */
     map<TMapped>(mapper: (value: T) => TMapped): IResult<TMapped, TError>;
+    /**
+     * If succeeded returns result of `mapper`; otherwise returns failed mapped result.
+     */
     do<TMapped>(mapper: (value: T) => IResult<TMapped, TError>): IResult<TMapped, TError>;
+    /**
+     * If succeeded returns containing value; otherwise throws converted to {@link Error} `error`.
+     */
     getOrThrow(): T;
+    /**
+     * If failed throws converted to {@link Error} `error`; otherwise do nothing.
+     */
     throwWhenFailed(): void;
+    /**
+     * If succeeded returns a new option with containing value; otherwise returns none.
+     */
     toOption(): IOption<T>;
 }
+/**
+ * The default implementation of {@link IResult}.
+ */
 export class Result<T, TError> implements IResult<T, TError> {
     private readonly _value: T | TError;
+    /**
+     * If suceeded returns containing value; otherwise throws an error.
+     */
     get value(): T {
         if (!this.ok) throw new Error('Failed result cannot get value.');
 
         return this._value as T;
     }
+    /**
+     * If suceeded throws an error; otherwise returns containing error.
+     */
     get error(): TError {
         if (this.ok) throw new Error('Succeeded result cannot get error.');
 
         return this._value as TError;
     }
+    /**
+     * If contain value returns `true`; otherwise `false`.
+     */
     readonly ok: boolean;
 
     private constructor(ok: boolean, value: T | TError) {
@@ -294,33 +314,57 @@ export class Result<T, TError> implements IResult<T, TError> {
         this._value = value;
     }
 
-    static ok<T, TError>(value: T): Result<T, TError> {
+    /**
+     * Creates a new succeeded result with `value` as containing value.
+     */
+    static ok<T, TError = never>(value: T): Result<T, TError> {
         return new Result<T, TError>(true, value);
     }
-    static error<T, TError>(error: TError): Result<T, TError> {
+    /**
+     * Creates a new failed result with `error` as containging error.
+     */
+    static error<TError, T = never>(error: TError): Result<T, TError> {
         return new Result<T, TError>(false, error);
     }
+    /**
+     * If suceeded and type of `callback` is not `undefined` and `callback` is not `null` calls `callback`; otherwise do nothing.
+     */
     onok(callback?: (value: T) => void): this {
         if (this.ok && callback) callback(this.value);
 
         return this;
     }
+    /**
+     * If not suceeded and type of `callback` is not `undefined` and `callback` is not `null` calls `callback`; otherwise do nothing.
+     */
     onerror(callback?: (error: TError) => void): this {
         if (!this.ok && callback) callback(this.error);
 
         return this;
     }
+    /**
+     * If type of `callback` is not `undefined` and `callback` is not `null` calls `callback` always; otherwise do nothing.
+     */
     onboth(callback?: () => void): this {
         if (callback) callback();
 
         return this;
     }
+    /**
+     * Returns mapped result.
+     */
     map<TMapped>(mapper: (value: T) => TMapped): IResult<TMapped, TError> {
         return this.ok ? Result.ok(mapper(this.value)) : Result.error(this.error);
     }
+    /**
+     * If succeeded returns result of `mapper`; otherwise returns failed mapped result.
+     */
     do<TMapped>(mapper: (value: T) => IResult<TMapped, TError>): IResult<TMapped, TError> {
         return this.ok ? mapper(this.value) : Result.error(this.error);
     }
+    /**
+     * If succeeded returns containing value; otherwise throws converted to {@link Error} `error`.
+     */
     getOrThrow(): T {
         if (this.ok) return this.value;
         
@@ -333,28 +377,65 @@ export class Result<T, TError> implements IResult<T, TError> {
         
         throw new Error(new String(this.error).toString());
     }
+    /**
+     * If failed throws converted to {@link Error} `error`; otherwise do nothing.
+     */
     throwWhenFailed(): void {
         this.getOrThrow();
     }
+    /**
+     * If succeeded returns a new option with containing value; otherwise returns none.
+     */
     toOption(): IOption<T> {
         return this.ok ? some(this.value) : none();
     }
 }
 
+/**
+ * The default result error interface.
+ */
 export interface IError {
+    /**
+     * The error message.
+     */
     readonly message: string;
+    /**
+     * The error data.
+     */
     readonly data: Readonly<any>;
+    /**
+     * The inner errors.
+     */
     readonly inners: readonly IError[];
 
+    /**
+     * Returns formatted `this` as lines. Every line has indent that is basic indent repeated `indent` times.
+     * @param indent Indent repetition count (`0` by default).
+     */
     format(indent?: number): string[];
+    /**
+     * Converts `this` to {@link Error}.
+     */
     toError(): Error;
 }
 export class ResultError {
-    readonly message: string;
-    readonly data: any;
-    readonly inners: ResultError[];
+    /**
+     * The error message.
+     */
+    message: string;
+    /**
+     * The error data.
+     */
+    data: any;
+    /**
+     * The inner errors.
+     */
+    inners: ResultError[];
 
-    constructor(message: string, data?: any, ...inners: (ResultError | string | null | undefined)[]) {
+    /**
+     * Creates a new result error.
+     */
+    constructor(message: string, data?: Readonly<any> | null, ...inners: readonly (ResultError | string | null | undefined)[]) {
         this.message = message;
         this.data = {...data};
         this.inners = [];
@@ -366,49 +447,59 @@ export class ResultError {
                     : error);
     }
 
-    static fromObject(objectError: ObjectError): ResultError {
+    private static toResultError(error: IError): ResultError {
+        const inners = error.inners.map(inner => ResultError.toResultError(inner));
+
+        return new ResultError(error.message, error.data, ...inners);
+    }
+    /**
+     * Converts object error to result error.
+     */
+    static fromObject(object: Readonly<ObjectError>): ResultError {
         const inners: (ResultError | string | null | undefined)[] =
-            'inners' in objectError &&
-            objectError.inners !== null &&
-            objectError.inners!.length > 0
-            ? objectError.inners!.map(inner => inner && typeof inner === 'object'
-                ? ResultError.fromObject(inner)
-                : inner as string)
+            'inners' in object &&
+            object.inners !== null &&
+            object.inners!.length > 0
+            ? object.inners!.map(inner =>
+                typeof inner !== 'undefined' && inner != null && typeof inner === 'object'
+                    ? 'error' in inner
+                        ? ResultError.fromObject(inner)
+                        : this.toResultError(inner as IError)
+                    : inner as string)
             : [];
-        const error = new ResultError(objectError.error, null, ...inners);
-        Object.assign(error.data, objectError);
+        const error = new ResultError(object.error, null, ...inners);
+        Object.assign(error.data, object);
         delete error.data.error;
         
         if ('inners' in error.data) delete error.data.inners;
 
         return error;
     }
+    /**
+     * Converts `this` to object error.
+     */
     toObject(): ObjectError {
-        const objectError = {...this.data, error: this.message};
+        const object = {...this.data, error: this.message};
 
         if (this.inners.length > 0)
-            Object.defineProperty(objectError, 'inners', {
-                value: this.inners.map(inner => inner.toObject()),
+            Object.defineProperty(object, 'inners', {
+                value: this.inners.map(inner =>
+                    'error' in inner.data || 'inners' in inner.data
+                        ? inner
+                        : inner.toObject()),
                 writable: true,
                 enumerable: true,
                 configurable: true
             });
         
-        return objectError;
+        return object;
     }
+    /**
+     * Converts `this` to error.
+     */
     freeze(): IError {
         return new FreezedResultError(this);
     }
-}
-function escape(input: string): string {
-    return input
-        .replace('\\', '\\\\')
-        .replace('\"', '\\"')
-        .replace('\t', '\\t')
-        .replace('\r', '\\r')
-        .replace('\n', '\\n')
-        .replace('\b', '\\b')
-        .replace('\f', '\\f');
 }
 class FreezedResultError implements IError {
     static readonly INDENT = '  ';
@@ -416,7 +507,7 @@ class FreezedResultError implements IError {
     readonly data: Readonly<any>;
     readonly inners: readonly IError[];
 
-    constructor(builder: ResultError) {
+    constructor(builder: Readonly<ResultError>) {
         this.message = builder.message;
         this.data = Object.freeze({...builder.data});
         const inners: IError[] = [];
@@ -427,6 +518,16 @@ class FreezedResultError implements IError {
         this.inners = Object.freeze(inners);
     }
 
+    static escape(input: string): string {
+        return input
+            .replace('\\', '\\\\')
+            .replace('\"', '\\"')
+            .replace('\t', '\\t')
+            .replace('\r', '\\r')
+            .replace('\n', '\\n')
+            .replace('\b', '\\b')
+            .replace('\f', '\\f');
+    }
     format(indent?: number): string[] {
         indent ??= 0;
         const repeatedIndent = FreezedResultError.INDENT.repeat(indent);
@@ -437,7 +538,7 @@ class FreezedResultError implements IError {
             const valueAsLines = (JSON.stringify(this.data[key], null, FreezedResultError.INDENT) ?? 'undefined')
                 .split('\n');
 
-            lines.push(`${repeatedIndent}+ \"${escape(key)}\": ${valueAsLines[0]}`);
+            lines.push(`${repeatedIndent}+ \"${FreezedResultError.escape(key)}\": ${valueAsLines[0]}`);
             lines.push(...valueAsLines.slice(1));
         }
         for (const inner of this.inners)
@@ -454,8 +555,17 @@ class FreezedResultError implements IError {
     }
 }
 
+/**
+ * The object error type.
+ */
 export type ObjectError = {
+    /**
+     * The error message.
+     */
     error: string;
-    inners?: (ObjectError | string | null | undefined)[] | null,
+    /**
+     * The inner errors.
+     */
+    inners?: readonly (IError | ObjectError | string | null | undefined)[] | null;
     [key: string]: any;
 }

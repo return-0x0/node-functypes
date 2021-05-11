@@ -1,21 +1,46 @@
+### v2.0.0
+
+- Updated `Option.get` behavior: string property keys shall be detected as property names (since v1.1.0 was as dot-separated string containing property keys)
+- Upgraded `ObjectError.inners` type: `readonly (IError | ObjectError | string | null | undefined)[] | null | undefined` (since v1.0.0 was `(ObjectError | string | null | undefined)[] | null | undefined`)
+- Changed `ResultError` members:
+  - `message`, `data`, and `inners` are mutable (since v1.0.0 were immutable).
+  - Upgraded `toObject` behavior: when an inner error's `data` contain a property with `error` or `inners` then the inner error shall not be converted to `ObjectError`
+  - Changed `constructor` signature: `consturctor(message: string, data?: Readonly<any> | null, ...inners: readonly (ResultError | string | null | undefined)[])` (since v1.0.0 was `consturctor(message: string, data?: any, ...inners: (ResultError | string | null | undefined)[])`)
+  - Changed `fromObject` signature: `fromObject(object: Readonly<ObjectError>): ResultError` (since v1.0.0 was `fromObject(objectError: ObjectError)`)
+- Changed `Result` members:
+  - Changed `ok` signature: `static ok<T, TError = never>(value: T): Result<T, TError>` (since v1.0.0 was `static ok<T, TError>(value: T): Result<T, TError>`)
+  - Changed `error` signature: `static error<TError, T = never>(error: TError): Result<T, TError>` (since v1.0.0 was `static error<T, TError>(error: TError): Result<T, TError>`)
+- Documented:
+  - `IResult<T>`
+  - `Result<T>`
+  - `IError`
+  - `ResultError`
+  - `ObjectError`
+
 ### v1.1.1
 
-- Fixed result types of `Some<T>`/`None<T>` properties/methods:
-  - `Some<T>.hasValue: boolean` -> `true`
-  - `Some<T>.map<TMapped>(...): IOption<TMapped>` -> `Some<TMapped>`
-  - `Some<T>.toNullable(): T | null` -> `T`
-  - `Some<T>.hasValue: boolean` -> `false`
-  - `Some<T>.map<TMapped>(...): IOption<TMapped>` -> `None<TMapped>`
-  - `Some<T>.do<TMapped>(...): IOption<TMapped>` -> `None<TMapped>`
-  - `Some<T>.toNullable(): T | null` -> `null`
+Fixed result types of `Some<T>`/`None<T>` members:
+- `Some<T>.hasValue: true` (since v1.0.0 was `boolean`)
+- `Some<T>.map<TMapped>(...): Some<TMapped>` (since v1.0.0 was `IOption<TMapped>`)
+- `Some<T>.toNullable(): T` (since v1.0.0 was `T | null`)
+- `None<T>.hasValue: false` (since v1.0.0 was `boolean`)
+- `None<T>.map<TMapped>(...): None<TMapped>` (since v1.0.0 was `IOption<TMapped>`)
+- `None<T>.do<TMapped>(...): None<TMapped>` (since v1.0.0 was `IOption<TMapped>`)
+- `None<T>.toNullable(): null` (since v1.0.0 was `T | null`)
 
 ### v1.1.0
 
-- Upgraded `Option.get` function:
-  - Changed signature: `get<T>(object: any, propertyKey?: any): IOption<T>` -> `get<T = any>(object: any, ...propertyKeys: any[]): IOption<T>`
+- Upgraded `Option.get`:
+  - Changed signature: `get<T = any>(object: any, ...propertyKeys: any[]): IOption<T>` (since v1.0.0 was `get<T>(object: any, propertyKey?: any): IOption<T>`)
   - Upgraded behavior:
     - Property keys can be passed in one row
     - String property keys shall be detected as dot-separated string containing property keys
+- Documented:
+  - `IOption<T>`
+  - `Option<T>`
+  - `Option`
+  - `RecursedOption<T>`
+  - `some<T>`/`none<T>`
 
 ### v1.0.0
 
