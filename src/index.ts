@@ -32,6 +32,10 @@ export interface IOption<T> {
      */
     do<TMapped>(mapper: (value: T) => IOption<TMapped>): IOption<TMapped>;
     /**
+     * If has value returns containing value; otherwise returns `value`.
+     */
+    or(value: T): T;
+    /**
      * If has value returns value; otherwise returns `null`.
      */
     toNullable(): T | null;
@@ -95,6 +99,12 @@ export class Some<T> implements IOption<T> {
      */
     do<TMapped>(mapper: (value: T) => IOption<TMapped>): IOption<TMapped> {
         return mapper(this.value);
+    }
+    /**
+     * Returns containing value always.
+     */
+    or(_: T): T {
+        return this.value;
     }
     /**
      * Returns containing value always.
@@ -170,6 +180,12 @@ export class None<T> implements IOption<T> {
      */
     do<TMapped>(_: (value: T) => IOption<TMapped>): None<TMapped> {
         return none();
+    }
+    /**
+     * Returns `value` always.
+     */
+    or(value: T): T {
+        return value;
     }
     /**
      * Returns `null` always.

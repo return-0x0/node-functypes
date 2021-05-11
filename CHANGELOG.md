@@ -1,3 +1,8 @@
+### v2.2.0
+
+- Added `or` method to `IOption<T>` interface: `or(value: T): T`
+- Updated `Some<T>` & `None<T>` implementations of `IOption<T>`
+
 ### v2.1.0
 
 - Added `arrayToOption` function: `arrayToOption<T>(array: IOption<T>[]): IOption<T[]>`
