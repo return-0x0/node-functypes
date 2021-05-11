@@ -2,8 +2,8 @@
 
 ## Example #1: Options
 ```javascript
-let _some = some(13);
-let _none = none();
+const _some = some(13);
+const _none = none();
 
 function getNullable() {
     const number = Math.random();
