@@ -392,6 +392,25 @@ export class Result<T, TError> implements IResult<T, TError> {
 }
 
 /**
+ * If any option is none returns none; otherwise returns mapped array.
+ */
+export function arrayToOption<T>(array: IOption<T>[]): IOption<T[]> {
+    return array.some(option => !option.hasValue)
+        ? none()
+        : some(array.map(option => option.value));
+}
+/**
+ * If any result is failed returns a new failed result with first result error; otherwise returns mapped array.
+ */
+export function arrayToResult<T, TError>(array: IResult<T, TError>[]): IResult<T[], TError> {
+    const failedResultIndex = array.findIndex(result => !result.ok);
+
+    return failedResultIndex === -1
+        ? Result.ok(array.map(result => result.value))
+        : Result.error(array[failedResultIndex].error);
+}
+
+/**
  * The default result error interface.
  */
 export interface IError {
@@ -418,6 +437,9 @@ export interface IError {
      */
     toError(): Error;
 }
+/**
+ * The result error class.
+ */
 export class ResultError {
     /**
      * The error message.

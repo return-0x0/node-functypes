@@ -1,3 +1,8 @@
+### v2.1.0
+
+- Added `arrayToOption` function: `arrayToOption<T>(array: IOption<T>[]): IOption<T[]>`
+- Added `arrayToResult` function: `arrayToResult<T, TError>(array: IResult<T, TError>[]): IResult<T[], TError>`
+
 ### v2.0.0
 
 - Updated `Option.get` behavior: string property keys shall be detected as property names (since v1.1.0 was as dot-separated string containing property keys)
