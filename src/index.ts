@@ -252,7 +252,7 @@ export namespace Option {
 /**
  * The result interface.
  */
-export interface IResult<T = void, TError = any> {
+export interface IResult<T = undefined, TError = any> {
     /**
      * If suceeded returns containing value; otherwise throws an error.
      */
@@ -302,7 +302,7 @@ export interface IResult<T = void, TError = any> {
 /**
  * The default implementation of {@link IResult}.
  */
-export class Result<T, TError> implements IResult<T, TError> {
+export class Result<T = undefined, TError = any> implements IResult<T, TError> {
     private readonly _value: T | TError;
     /**
      * If suceeded returns containing value; otherwise throws an error.

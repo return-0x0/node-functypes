@@ -1,3 +1,8 @@
+### v2.3.0
+
+- Changed `IResult` signature: `IResult<T = undefined, TError = any>` (since v1.0.0 was `IResult<T = void, TError = any>`)
+- Changed `Result` signature: `Result<T = undefined, TError = any> implements IResult<T, TError>` (since v1.0.0 was `Result<T, TError> implements IResult<T, TError>`)
+
 ### v2.2.0
 
 - Added `or` method to `IOption<T>` interface: `or(value: T): T`
